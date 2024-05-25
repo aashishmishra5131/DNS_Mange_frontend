@@ -6,6 +6,7 @@ import axios from 'axios';
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -16,15 +17,16 @@ const Login = () => {
       const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       if (response.status === 200) {
         localStorage.setItem('token', response.data.token);
-        console.log('Login successful');
+        console.log(response.data.token)
+        localStorage.setItem('email', response.data.user.email);
+        console.log(response.data.user.email,"hsfshh")
         navigate('/dashboard');
       } else {
         console.error('Login failed:', response.statusText);
-       
       }
     } catch (error) {
+      window.alert("Invaild")
       console.error('Login failed:', error.message);
-      
     }
   };
 
