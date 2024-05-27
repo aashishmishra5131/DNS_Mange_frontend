@@ -26,7 +26,7 @@ const Register = () => {
     console.log('Form Data:', formData); // Log formData for debugging
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', formData);
+      const response = await axios.post(`https://dns-mange-backend.onrender.com/api/auth/register`, formData);
       if (response.status === 201) {
         console.log('Registration successful');
         window.alert("Registration successful");

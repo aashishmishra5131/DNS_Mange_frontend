@@ -47,7 +47,7 @@ useEffect(() => {
         }
       };
 
-      const response = await axios.get('http://localhost:5000/api/dnsrecords', config);
+      const response = await axios.get(`https://dns-mange-backend.onrender.com/api/dnsrecords`, config);
       setDnsRecords(response.data);
       setLoading(false);
     } catch (error) {
@@ -96,7 +96,7 @@ useEffect(() => {
         }
       };
 
-      await axios.delete(`http://localhost:5000/api/dnsrecords/${id}`, config);
+      await axios.delete(`https://dns-mange-backend.onrender.com/api/dnsrecords/${id}`, config);
       setDnsRecords(dnsRecords.filter(record => record._id !== id));
     } catch (error) {
       console.error('Error deleting DNS record:', error.message);
@@ -105,7 +105,7 @@ useEffect(() => {
 
   const handleUsersClick = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/auth/users');
+      const response = await axios.get(`https://dns-mange-backend.onrender.com/api/auth/users`);
       setUsers(response.data);
       setShowUsers(true);
       setShowAddData(false);
@@ -183,7 +183,7 @@ useEffect(() => {
 
   try {
     if (isUpdateMode) {
-      const response = await axios.put(`http://localhost:5000/api/dnsrecords/${dnsRecord._id}`, dnsRecord, config);
+      const response = await axios.put(`https://dns-mange-backend.onrender.com/api/dnsrecords/${dnsRecord._id}`, dnsRecord, config);
       setSubmittedData(response.data);
       // Update the DNS records in the state with the updated record
       setDnsRecords(dnsRecords.map(record => (record._id === dnsRecord._id ? response.data : record)));
@@ -198,7 +198,7 @@ useEffect(() => {
       });
     } else {
       // Create new record
-      const response = await axios.post('http://localhost:5000/api/dnsrecords', dnsRecord, config);
+      const response = await axios.post(`https://dns-mange-backend.onrender.com/api/dnsrecords`, dnsRecord, config);
       setSubmittedData(response.data);
       // Add the new record to the DNS records in the state
       setDnsRecords([...dnsRecords, response.data]);

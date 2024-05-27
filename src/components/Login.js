@@ -14,7 +14,7 @@ const Login = () => {
     const password = formData.get('password');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const response = await axios.post(`https://dns-mange-backend.onrender.com/api/auth/login`, { email, password });
       if (response.status === 200) {
         console.log(response.data.user.id);
         localStorage.setItem('token', response.data.token);
