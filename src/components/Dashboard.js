@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiUsers, FiSettings, FiBarChart2, FiClipboard, FiPlusCircle } from 'react-icons/fi';
+import { FiUsers, FiBarChart2, FiPlusCircle } from 'react-icons/fi';
 import axios from 'axios';
 import { useAuth } from '../AuthProvider';
+import ModalChart from './ModalChart';
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -24,6 +26,12 @@ const Dashboard = () => {
 const [loading, setLoading] = useState(true);
 const [showTable, setShowTable] = useState(true);
 const [isUpdateMode, setIsUpdateMode] = useState(false);
+const [isChartModalOpen, setIsChartModalOpen] = useState(false);
+  const [chartData, setChartData] = useState([]);
+
+
+  const userId = localStorage.getItem('userId');
+  console.log(userId);
 
 useEffect(() => {
   const fetchDnsRecords = async () => {
@@ -114,6 +122,25 @@ useEffect(() => {
     setShowTable(false); // Hide the table when add data is clicked
   };
 
+  const handleChartsClick = () => {
+    // Prepare data for charts
+    const recordCounts = dnsRecords.reduce((acc, record) => {
+      acc[record.type] = (acc[record.type] || 0) + 1;
+      return acc;
+    }, {});
+
+    const formattedData = Object.keys(recordCounts).map(type => ({
+      name: type,
+      value: recordCounts[type]
+    }));
+
+    setChartData(formattedData);
+    setIsChartModalOpen(true);
+    setShowUsers(false);
+    setShowAddData(false);
+    setShowTable(false);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setDnsRecord({ ...dnsRecord, [name]: value });
@@ -190,7 +217,6 @@ useEffect(() => {
 };
 
   
-  
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -207,17 +233,9 @@ useEffect(() => {
             <FiPlusCircle className="mr-2" />
             Add Data
           </li>
-          <li className="flex items-center py-2">
-            <FiSettings className="mr-2" />
-            Settings
-          </li>
-          <li className="flex items-center py-2">
+          <li className="flex items-center py-2" onClick={handleChartsClick}>
             <FiBarChart2 className="mr-2" />
             Charts
-          </li>
-          <li className="flex items-center py-2">
-            <FiClipboard className="mr-2" />
-            Reports
           </li>
         </ul>
         <button onClick={handleLogout} className="bg-red-900 text-white mt-4 px-4 py-2 rounded">
@@ -337,25 +355,29 @@ useEffect(() => {
                   <td className="border border-gray-500 px-4 py-2">{record.ttl}</td>
                   <td className="border border-gray-500 px-4 py-2">{record.priority || '-'}</td>
                   <td className="border border-gray-500 px-4 py-2">
-                    <button onClick={() => handleUpdate(record._id)} className="bg-blue-900 text-white px-4 py-2 rounded mr-2 hover:bg-green-700">Update</button>
-                    <button onClick={() => handleDelete(record._id)} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-900">Delete</button>
+                    {record.userId === userId && (
+                      <>
+                        <button onClick={() => handleUpdate(record._id)} className="bg-blue-900 text-white px-4 py-2 rounded mr-2 hover:bg-green-700">Update</button>
+                        <button onClick={() => handleDelete(record._id)} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-900">Delete</button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
+        
+         <ModalChart
+          isOpen={isChartModalOpen}
+          onRequestClose={() => setIsChartModalOpen(false)}
+          data={chartData}
+        />
       </div>
     </div>
   );
 };
 
 export default Dashboard;
-
-
-
-
-
-
 
 

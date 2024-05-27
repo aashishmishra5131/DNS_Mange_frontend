@@ -16,9 +16,11 @@ const Login = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       if (response.status === 200) {
+        console.log(response.data.user.id);
         localStorage.setItem('token', response.data.token);
         console.log(response.data.token)
         localStorage.setItem('email', response.data.user.email);
+        localStorage.setItem('userId', response.data.user.id);
         console.log(response.data.user.email,"hsfshh")
         navigate('/dashboard');
       } else {
